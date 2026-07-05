@@ -21,6 +21,7 @@ pgdata/
 data/
 
 # IDE y sistema operativo
+.agents/
 .vscode/
 .idea/
 *.code-workspace
