@@ -33,3 +33,4 @@ Thumbs.db
 
 # Scripts de despliegue generados localmente (opcional)
 despliegue_aws.sh
+despliegue_azure.sh
