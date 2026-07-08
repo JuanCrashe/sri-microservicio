@@ -46,6 +46,7 @@ AMI_ID="ami-053a45fff0a704a47" # Amazon Linux 2023 en us-east-1
 INSTANCE_TYPE="t2.micro"
 
 # 1. Crear Key Pair
+rm -f $KEY_NAME.pem
 aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text > $KEY_NAME.pem
 chmod 400 $KEY_NAME.pem
 
