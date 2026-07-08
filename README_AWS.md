@@ -51,9 +51,9 @@ chmod 400 $KEY_NAME.pem
 
 # 2. Crear Security Group
 SG_ID=$(aws ec2 create-security-group --group-name $SG_NAME --description "SG para Microservicio SRI" --query 'GroupId' --output text)
-aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 22 --cidr 0.0.0.0/0 --output none
-aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 8080 --cidr 0.0.0.0/0 --output none
-aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 5000 --cidr 0.0.0.0/0 --output none
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 22 --cidr 0.0.0.0/0 > /dev/null
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 8080 --cidr 0.0.0.0/0 > /dev/null
+aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port 5000 --cidr 0.0.0.0/0 > /dev/null
 
 # 3. Preparar User Data
 cat <<EOF > user_data.sh
@@ -95,7 +95,10 @@ aws ec2 run-instances \
   --security-group-ids $SG_ID \
   --user-data file://user_data.sh \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=SRI-Microservicio}]' \
-  --output none
+  > /dev/null
+
+# 5. Eliminar el script temporal
+rm user_data.sh
 ```
 *(Nota: Para replicar este despliegue, reemplace los valores de `SUPABASE_URL` y `SUPABASE_KEY` dentro de `user_data.sh` por sus credenciales legítimas de base de datos).*
 
