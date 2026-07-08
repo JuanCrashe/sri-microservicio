@@ -4,6 +4,10 @@ Esta guía documenta la estrategia de despliegue utilizada en Azure para sortear
 
 El despliegue sigue siendo automatizado a nivel de Sistema Operativo mediante la inyección de un script `cloud-init` (Custom Data).
 
+> [!IMPORTANT]
+> **Contexto Académico (Cuentas de Estudiante)**
+> Este proyecto fue desplegado utilizando suscripciones de Microsoft Azure for Students. Las dificultades encontradas con la línea de comandos (falta física de servidores en regiones específicas y bloqueos por políticas de cuota) son limitaciones estrictas impuestas por Microsoft a las cuentas gratuitas para evitar la saturación de sus centros de datos. En un entorno corporativo con una suscripción **Pay-As-You-Go** (Pago por uso), el despliegue original por CLI funciona de manera transparente sin sufrir restricciones de región o inventario (Capacity Restrictions).
+
 ## Pasos de Creación
 
 1. Ingresar a [portal.azure.com](https://portal.azure.com).

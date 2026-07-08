@@ -4,6 +4,10 @@ Este documento describe la estrategia de Infraestructura como Código (IaC) impl
 
 Esta solución garantiza que cada nueva instancia nazca con todo el stack de software configurado, sin necesidad de intervención manual.
 
+> [!NOTE]
+> **Contexto Académico (Cuentas de Estudiante)**
+> Este despliegue fue diseñado y probado en un entorno de capa gratuita (Free Tier / AWS Educate). A diferencia de Microsoft Azure, AWS demostró mayor flexibilidad y disponibilidad de inventario físico para instancias gratuitas (`t2.micro`), permitiendo que la automatización por CLI (Infraestructura como Código) se ejecutara de principio a fin sin bloqueos por cuotas regionales o restricciones de capacidad.
+
 ## Requisitos Previos
 
 - Tener una cuenta activa en AWS.
