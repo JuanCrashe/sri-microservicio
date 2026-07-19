@@ -4,13 +4,13 @@ name: CI/CD Pipeline - Docker Build & Push
 # 1. EVENTOS QUE DISPARAN EL PIPELINE (Triggers)
 # -----------------------------------------------------------------------------
 # Este bloque 'on' define CUÁNDO GitHub debe ejecutar esta automatización.
-# Configuramos que reaccione automáticamente cada vez que alguien haga un 'git push' 
+# Configuramos que reaccione automáticamente cada vez que alguien haga un 'git push'
 # a la rama principal ('main') o a cualquier rama de desarrollo ('feature/').
 on:
   push:
     branches:
       - main
-      - 'feature/**'
+      - "feature/**"
 
 # -----------------------------------------------------------------------------
 # 2. VARIABLES GLOBALES (Environment)
@@ -19,7 +19,7 @@ env:
   # El Container Registry donde alojaremos nuestras imágenes Docker de forma privada o pública.
   # Usaremos ghcr.io (GitHub Container Registry) por ser gratuito y nativo de GitHub.
   REGISTRY: ghcr.io
-  
+
   # Construimos los nombres de las imágenes dinámicamente usando el nombre de tu repositorio.
   # Resultado: JuanCrashe/sri-microservicio-backend
   IMAGE_NAME_BACKEND: ${{ github.repository }}-backend
@@ -32,8 +32,8 @@ jobs:
   build-and-push:
     # Se ejecutará en la última versión de un servidor Ubuntu temporal en la nube de GitHub.
     runs-on: ubuntu-latest
-    
-    # PERMISOS: Otorgamos permisos de escritura al token automático de GitHub para que 
+
+    # PERMISOS: Otorgamos permisos de escritura al token automático de GitHub para que
     # pueda subir (push) paquetes a tu GHCR sin necesidad de que tú ingreses contraseñas.
     permissions:
       contents: read
@@ -54,7 +54,7 @@ jobs:
 
       # PASO 3: Construir y etiquetar (tag) la imagen Docker del BACKEND.
       # Usamos el SHA del commit (${{ github.sha }}) como versión única.
-      # Esto es VITAL en GitOps: garantiza que cada imagen tenga un ID único (ej. v-a1b2c3d) 
+      # Esto es VITAL en GitOps: garantiza que cada imagen tenga un ID único (ej. v-a1b2c3d)
       # para que Kubernetes sepa exactamente qué versión exacta está desplegada.
       - name: Construir y Subir imagen Docker del Backend
         run: |
@@ -69,21 +69,21 @@ jobs:
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
 
       # --- AQUÍ TERMINA LA INTEGRACIÓN CONTINUA (CI) ---
-      
+
       # PASO 5: (GitOps Trigger - Actualización de Manifiestos)
-      # Su objetivo será clonar el segundo repositorio (GitOps), actualizar la versión 
-      # de las imágenes con el nuevo SHA usando Kustomize, y hacer un push. 
+      # Su objetivo será clonar el segundo repositorio (GitOps), actualizar la versión
+      # de las imágenes con el nuevo SHA usando Kustomize, y hacer un push.
       # Al hacer este push, ArgoCD se dará cuenta del cambio y actualizará Kubernetes.
       # NOTA: Este código está comentado temporalmente hasta que construyamos el repositorio GitOps.
-      # 
-      # - name: Actualizar Repositorio GitOps
-      #   run: |
-      #     git clone https://${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.repository_owner }}/sri-gitops.git
-      #     cd sri-gitops/overlays/prod
-      #     kustomize edit set image backend-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
-      #     kustomize edit set image frontend-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
-      #     git config user.name "GitHub Actions Bot"
-      #     git config user.email "actions@github.com"
-      #     git add .
-      #     git commit -m "chore: actualizar imágenes a ${{ github.sha }}"
-      #     git push
+      #
+      - name: Actualizar Repositorio GitOps
+        run: |
+          git clone https://${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.repository_owner }}/sri-gitops.git
+          cd sri-gitops/overlays/prod
+          kustomize edit set image backend-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
+          kustomize edit set image frontend-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "chore: actualizar imágenes a ${{ github.sha }}"
+          git push
