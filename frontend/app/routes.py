@@ -29,8 +29,8 @@ def login():
         password = request.form.get('password')
         
         try:
-            response = requests.post(f"{BACKEND_URL}/api/v1/auth/login", json={
-                "ruc": ruc,
+            response = requests.post(f"{BACKEND_URL}/api/v1/auth/login", data={
+                "username": ruc,
                 "password": password
             })
             
